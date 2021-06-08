@@ -14,4 +14,4 @@ If you want to reset settings, just press the button __Reset__.
 
 <img src="./src/img/Settings.png" alt="Timer Screenshot" width="450px">
 
-## That's all! Enjoy :)
+## That's all! Enjoy! :)
