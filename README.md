@@ -2,7 +2,7 @@
 
 This application allows you to set a timer for something.
 
-<img src="./src/img/Timer.png" alt="Timer Screenshot" width="450px">
+<img src="./src/img/TimerScreen.png" alt="Timer Screenshot" width="450px">
 
 ## How to use it
 
