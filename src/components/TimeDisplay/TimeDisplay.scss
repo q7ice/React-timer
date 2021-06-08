@@ -1,0 +1,11 @@
+.time-display{
+  font-size: 150px;
+  font-weight: 400;
+  user-select: none;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.time-display:hover {
+  color: rgb(96, 40, 151);
+}
