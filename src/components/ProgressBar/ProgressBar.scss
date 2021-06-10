@@ -5,6 +5,7 @@
   width: 100%;
 }
 .progress-value {
+  transition: width 1s linear;
   color: #fff;
   background-color: #007BFF;
   height: 50px;
