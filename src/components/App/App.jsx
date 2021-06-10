@@ -1,7 +1,7 @@
 import React from 'react'
 import Timer from '../Timer'
 import TimeDisplay from '../TimeDisplay'
-// import ProgressBar from '../ProgressBar'
+import ProgressBar from '../ProgressBar'
 
 import './App.scss'
 
@@ -21,7 +21,7 @@ function App() {
         settings={settings}
         onComplete={onTimerComplete}
         TimeDisplay={TimeDisplay}
-        // Progress={ProgressBar}
+        ProgressBar={ProgressBar}
       />
     </div>
   )

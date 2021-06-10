@@ -1,10 +1,12 @@
 import React from 'react'
 
-function ProgressBar() {
+import './ProgressBar.scss'
+
+function ProgressBar({value}) {
   return (
-    <div>
-      <div>
-        Hello
+    <div className="progress-wrapper">
+      <div className="progress-value" style={{width: `${value}%`}}>
+        <span>{Math.round(value)}%</span>
       </div>
     </div>
   )

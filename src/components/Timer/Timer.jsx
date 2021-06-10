@@ -28,6 +28,8 @@ function Timer({settings, onComplete, TimeDisplay, ProgressBar}) {
     setSecondsLeft(calculateSeconds(time))
   }
 
+  const calculateProgress = (seconds, settings) => Math.round(seconds / calculateSeconds(settings) * 100)
+
   const startHanler = () => {
     if(isPause) {
       const intervalTick = () => {
@@ -74,7 +76,7 @@ function Timer({settings, onComplete, TimeDisplay, ProgressBar}) {
         </button>
       </div>
       <div className="content-center">
-        {/* <ProgressBar/> */}
+        <ProgressBar value={calculateProgress(secondsLeft, currentSettings)}/>
       </div>
       {isEdit && 
       <Modal 
