@@ -1,20 +1,10 @@
 import React, { useState, useRef } from 'react'
 import Modal from '../Modal'
+import {calculateSeconds, convertSeconds, calculateProgress} from './Util'
 
 import './Timer.scss'
 
 function Timer({settings, onComplete, TimeDisplay, ProgressBar}) {
-  function calculateSeconds(time) {
-    return time.hours * 3600 + time.minutes * 60 + time.seconds
-  }
-  function convertSeconds(seconds) {
-    const time = Math.trunc(seconds)
-    return {
-      hours: Math.trunc(time / 3600),
-      minutes: Math.trunc((time % 3600) / 60),
-      seconds: time % 60
-    }
-  }
   const [currentSettings, setCurrentSettings] = useState(settings)
   const [secondsLeft, setSecondsLeft] = useState(calculateSeconds(settings))
   const [isPause, setIsPause] = useState(true)
@@ -27,8 +17,6 @@ function Timer({settings, onComplete, TimeDisplay, ProgressBar}) {
     setCurrentSettings(time)
     setSecondsLeft(calculateSeconds(time))
   }
-
-  const calculateProgress = (seconds, settings) => Math.round(seconds / calculateSeconds(settings) * 100)
 
   const startHanler = () => {
     if(isPause) {
