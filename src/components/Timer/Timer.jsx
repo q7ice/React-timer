@@ -1,98 +1,89 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import Modal from '../Modal'
 
 import './Timer.scss'
 
-class Timer extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      settings: this.props.settings,
-      secondsLeft: this.calulateSecondsLeft(this.props.settings),
-      isPause: true,
-      isEdit: false,
-      intervalID: null
-    }
+function Timer({settings, onComplete, TimeDisplay, ProgressBar}) {
+  function calculateSeconds(time) {
+    return time.hours * 3600 + time.minutes * 60 + time.seconds
   }
-
-  calulateSecondsLeft = (settings) => {
-    return settings.hours * 3600 + settings.minutes * 60 + settings.seconds
-  }
-
-  convertSeconds = (secondsLeft) => {
-    const time = Math.trunc(secondsLeft)
-    const settings = {
+  function convertSeconds(seconds) {
+    const time = Math.trunc(seconds)
+    return {
       hours: Math.trunc(time / 3600),
       minutes: Math.trunc((time % 3600) / 60),
       seconds: time % 60
     }
-    return settings
+  }
+  const [currentSettings, setCurrentSettings] = useState(settings)
+  const [secondsLeft, setSecondsLeft] = useState(calculateSeconds(settings))
+  const [isPause, setIsPause] = useState(true)
+  const [isEdit, setIsEdit] = useState(false)
+
+  const intervalID = useRef(null)
+
+  const setTime = (hours, minutes, seconds) => {
+    const time = {hours, minutes, seconds}
+    setCurrentSettings(time)
+    setSecondsLeft(calculateSeconds(time))
   }
 
-  setTime = (hours, minutes, seconds) => {
-    const settings = {hours, minutes, seconds}
-    this.setState({settings})
-    this.setState({secondsLeft: this.calulateSecondsLeft(settings)})
-  }
-
-  startHanler = () => {
-    if(this.state.isPause) {
+  const startHanler = () => {
+    if(isPause) {
       const intervalTick = () => {
-        if(this.state.secondsLeft > 0)
-          this.setState(prev => {return {secondsLeft: prev.secondsLeft - 1}})
-        else {
-          clearInterval(this.state.intervalID)
-          this.setState({isPause: true})
-          this.props.onComplete()
-        }
+        setSecondsLeft(seconds => {
+          if(seconds > 0) return seconds - 1
+          clearInterval(intervalID.current)
+          setIsPause(true)
+          onComplete()
+          return seconds
+        })
       }
-      const intervalID = setInterval(intervalTick, 1000)
-      this.setState({intervalID})
+      intervalID.current = setInterval(intervalTick, 1000)
     } else {
-      clearInterval(this.state.intervalID)
-      this.setState({intervalID: null})
+      clearInterval(intervalID.current)
+      intervalID.current = null
     }
-    this.setState(prev => {return {isPause: !prev.isPause}})
+    setIsPause(isPause => !isPause)
   }
 
-  resetHandler = () => {
-    clearInterval(this.state.intervalID)
-    this.setState({intervalID: null})
-    this.setState({isPause: true})
-    this.setState({secondsLeft: this.calulateSecondsLeft(this.state.settings)})
+  const resetHandler = () => {
+    clearInterval(intervalID.current)
+    intervalID.current = null
+    setIsPause(true)
+    setSecondsLeft(calculateSeconds(currentSettings))
   }
 
-  render() {
-    const TimeDisplay = this.props.children
-    return (
-      <div>
-        <div onClick={() => {this.setState({isEdit: true})}} className="content-center">
-          <TimeDisplay {...this.convertSeconds(this.state.secondsLeft)}/>
-        </div>
-        <div className="timer__buttons content-center">
-          <button 
-            className="btn btn-start timer__btn"
-            onClick={this.startHanler}
-          >
-            {this.state.isPause ? "Start" : "Pause"}
-          </button>
-          <button 
-            className="btn btn-reset timer__btn"
-            onClick={this.resetHandler}
-          >
-            Reset
-          </button>
-        </div>
-        {this.state.isEdit && 
-        <Modal 
-          closeModal={() => this.setState({isEdit: false})}
-          setTime={this.setTime}
-          settings={this.state.settings}
-        />}
+  return (
+    <div>
+      <div onClick={() => setIsEdit(true)} className="content-center">
+        <TimeDisplay {...convertSeconds(secondsLeft)}/>
       </div>
-    )
-  }
+      <div className="timer__buttons content-center">
+        <button 
+          className="btn btn-start timer__btn"
+          onClick={startHanler}
+        >
+          {isPause ? "Start" : "Pause"}
+        </button>
+        <button 
+          className="btn btn-reset timer__btn"
+          onClick={resetHandler}
+        >
+          Reset
+        </button>
+      </div>
+      <div className="content-center">
+        {/* <ProgressBar/> */}
+      </div>
+      {isEdit && 
+      <Modal 
+        closeModal={() => setIsEdit(false)}
+        setTime={setTime}
+        settings={currentSettings}
+      />}
+    </div>
+  )
 }
 
 export default Timer
